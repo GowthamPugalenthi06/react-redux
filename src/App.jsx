@@ -7,10 +7,20 @@ import Profile from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import { useSelector } from "react-redux";
 import Layout from "./components/Layout";
+import { useDispatch} from "react-redux";
+import { login } from "./store/authSlice"; 
+import { useEffect } from "react";
 
 export default function App() {
+  const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      dispatch(login(JSON.parse(storedUser))); 
+    }
+  }, [dispatch]);
   return (
     <Routes>
       <Route path="/login" element={<Login />} />

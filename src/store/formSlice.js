@@ -1,4 +1,3 @@
-// redux/formSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -15,12 +14,20 @@ const formSlice = createSlice({
     loadSubmissions: (state, action) => {
       state.submissions = action.payload;
     },
+  
     updateSubmission: (state, action) => {
-      const { id, updated } = action.payload;
-      state.submissions[id] = updated;
+      const { id, updatedData } = action.payload;
+      const index = state.submissions.findIndex((sub) => sub.id === id);
+      if (index !== -1) {
+        state.submissions[index] = { ...state.submissions[index], ...updatedData };
+      }
     },
+   
     deleteSubmission: (state, action) => {
-      state.submissions.splice(action.payload, 1);
+      const idToDelete = action.payload;
+      state.submissions = state.submissions.filter(
+        (sub) => sub.id !== idToDelete
+      );
     },
   },
 });

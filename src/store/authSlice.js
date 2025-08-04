@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const usersFromStorage = JSON.parse(localStorage.getItem("users")) || [];
-
+const loggedInUserFromStorage = JSON.parse(localStorage.getItem("user")) || null;
 const initialState = {
   users: usersFromStorage,
-  user: null,
-  isAuthenticated: false,
+  user: loggedInUserFromStorage,
+  isAuthenticated: !!loggedInUserFromStorage,
 };
 
 const authSlice = createSlice({
@@ -30,20 +30,9 @@ const authSlice = createSlice({
     },
 
     login: (state, action) => {
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      const foundUser = users.find(
-        (user) =>
-          user.username === action.payload.username &&
-          user.password === action.payload.password
-      );
-
-      if (foundUser) {
-        state.user = foundUser;
-        state.isAuthenticated = true;
-        localStorage.setItem("user", JSON.stringify(foundUser)); 
-      } else {
-        throw new Error("Invalid username or password");
-      }
+      state.user = action.payload;
+  state.isAuthenticated = true;
+      
     },
 
     logout: (state) => {
