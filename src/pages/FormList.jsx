@@ -412,7 +412,7 @@ export default function FormList() {
 
             <TextInput
               label="Phone Number"
-              type="tel"
+              type="number"
               placeholder="1234567890"
               {...formik.getFieldProps("phone")}
               error={formik.touched.phone && formik.errors.phone}
