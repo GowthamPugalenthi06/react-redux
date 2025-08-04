@@ -34,6 +34,9 @@ import {
   IconPhone,
   IconLocation,
 } from '@tabler/icons-react';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+
 
 export default function Profile() {
   const user = useSelector((state) => state.auth.user);
@@ -104,7 +107,7 @@ export default function Profile() {
               style={{
                 border: '4px solid white',
                 boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: '#f1f1f1',
                 color: 'white',
                 fontSize: 32,
                 fontWeight: 600,
@@ -168,34 +171,54 @@ export default function Profile() {
       </Card>
 
       <Modal
-        opened={opened}
-        onClose={close}
-        title={
-          <Group>
-            <ThemeIcon variant="light" color="indigo" size="lg">
-              <IconUserCircle size="17px" />
-            </ThemeIcon>
-            <Box>
-              <Text fw={600} size="lg">
-                Edit Profile
-              </Text>
-              <Text size="sm" c="dimmed">
-                Update your personal information
-              </Text>
-            </Box>
-          </Group>
-        }
-        size="md"
-        centered
-        padding="xl"
-        radius="lg"
-      >
+  opened={opened}
+  onClose={close}
+  title={
+    <Group>
+      <ThemeIcon variant="light" color="indigo" size="lg">
+        <IconUserCircle size="17px" />
+      </ThemeIcon>
+      <Box>
+        <Text fw={600} size="lg">Edit Profile</Text>
+        <Text size="sm" c="dimmed">Update your personal information</Text>
+      </Box>
+    </Group>
+  }
+  size="md"
+  centered
+  padding="xl"
+  radius="lg"
+>
+  <Formik
+    initialValues={formData}
+    validationSchema={Yup.object({
+      username: Yup.string().required('Username is required'),
+      email: Yup.string().email('Invalid email').required('Email is required'),
+      phone_number: Yup.string()
+        .matches(/^\d+$/, 'Phone number must be numeric')
+        .min(10, 'Too short')
+        .max(10, 'Too long'),
+      location: Yup.string(),
+    })}
+    onSubmit={(values) => {
+      setLoading(true);
+      const updatedUser = { ...user, ...values };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      dispatch(updateUser(updatedUser));
+      setLoading(false);
+      close();
+      openSuccess();
+    }}
+  >
+    {({ values, handleChange, handleSubmit, touched, errors }) => (
+      <Form onSubmit={handleSubmit}>
         <Stack gap="lg" mt="md">
           <TextInput
             label="Username"
             name="username"
-            value={formData.username}
+            value={values.username}
             onChange={handleChange}
+            error={touched.username && errors.username}
             placeholder="Enter your username"
             leftSection={<IconUser size="15" />}
             required
@@ -206,9 +229,11 @@ export default function Profile() {
           <TextInput
             label="Email Address"
             name="email"
-            type="email"
-            value={formData.email}
+            type='email'
+            value={values.email}
             onChange={handleChange}
+            error={touched.email && errors.email}
+            
             placeholder="Enter your email"
             leftSection={<IconMail size="15" />}
             required
@@ -219,8 +244,9 @@ export default function Profile() {
           <TextInput
             label="Phone Number"
             name="phone_number"
-            value={formData.phone_number}
+            value={values.phone_number}
             onChange={handleChange}
+            error={touched.phone_number && errors.phone_number}
             placeholder="Enter your phone number"
             leftSection={<IconPhone size="15" />}
             radius="md"
@@ -230,8 +256,9 @@ export default function Profile() {
           <TextInput
             label="Location"
             name="location"
-            value={formData.location}
+            value={values.location}
             onChange={handleChange}
+            error={touched.location && errors.location}
             placeholder="Enter your location"
             leftSection={<IconLocation size="15" />}
             radius="md"
@@ -243,8 +270,8 @@ export default function Profile() {
               Cancel
             </Button>
             <Button
+              type="submit"
               color="indigo"
-              onClick={handleSubmit}
               loading={loading}
               radius="md"
               size="md"
@@ -254,7 +281,11 @@ export default function Profile() {
             </Button>
           </Group>
         </Stack>
-      </Modal>
+      </Form>
+    )}
+  </Formik>
+</Modal>
+
 
       <Modal
         opened={successOpened}
