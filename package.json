@@ -12,12 +12,21 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@mantine/core": "^8.2.2",
+    "@mantine/dates": "^8.2.2",
+    "@mantine/form": "^8.2.2",
+    "@mantine/hooks": "^8.2.2",
+    "@mantine/notifications": "^8.2.2",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
     "@mui/x-date-pickers": "^8.9.0",
+    "@reduxjs/toolkit": "^2.8.2",
+    "@tabler/icons-react": "^3.34.1",
     "formik": "^2.4.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.7.1",
     "yup": "^1.6.1"
   },
   "devDependencies": {
